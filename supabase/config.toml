@@ -1,1 +1,10 @@
 project_id = "jovbsxbfnpbyentiymyn"
+
+[functions.food-listings]
+verify_jwt = false
+
+[functions.user-profiles]
+verify_jwt = false
+
+[functions.auth]
+verify_jwt = false
