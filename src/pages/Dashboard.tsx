@@ -1,36 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Leaf, Plus, Search, MapPin, Calendar, Package } from "lucide-react";
+import { Leaf, Search, MapPin, Calendar, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { NewListingDialog } from "@/components/NewListingDialog";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [listings, setListings] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Mock data - will be replaced with real data from backend
-  const listings = [
-    {
-      id: "1",
-      title: "Fresh Tomatoes",
-      donor: "Green Valley Farm",
-      quantity: "5 kg",
-      expiry: "2025-12-25",
-      location: "Downtown",
-      status: "available",
-    },
-    {
-      id: "2",
-      title: "Bread Loaves",
-      donor: "Baker's Delight",
-      quantity: "20 units",
-      expiry: "2025-12-24",
-      location: "West Side",
-      status: "available",
-    },
-  ];
+  useEffect(() => {
+    fetchListings();
+  }, []);
+
+  const fetchListings = async () => {
+    try {
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/food-listings`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setListings(data);
+      }
+    } catch (error) {
+      console.error("Error fetching listings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -63,10 +65,7 @@ const Dashboard = () => {
               className="pl-10"
             />
           </div>
-          <Button className="gap-2 w-full sm:w-auto">
-            <Plus className="w-4 h-4" />
-            Post New Listing
-          </Button>
+          <NewListingDialog />
         </div>
 
         {/* Stats */}
@@ -90,7 +89,16 @@ const Dashboard = () => {
 
         {/* Listings Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listings.map((listing) => (
+          {isLoading ? (
+            <div className="col-span-full text-center py-12 text-muted-foreground">
+              Loading listings...
+            </div>
+          ) : listings.length === 0 ? (
+            <div className="col-span-full text-center py-12 text-muted-foreground">
+              No listings found. Be the first to post!
+            </div>
+          ) : (
+            listings.map((listing) => (
             <Card key={listing.id} className="hover:shadow-elegant transition-shadow">
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -121,7 +129,8 @@ const Dashboard = () => {
                 </Button>
               </CardContent>
             </Card>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>
