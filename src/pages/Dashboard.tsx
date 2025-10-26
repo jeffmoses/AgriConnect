@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Leaf, Search, MapPin, Calendar, Package } from "lucide-react";
+import { Leaf, Search, MapPin, Calendar, Package, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { NewListingDialog } from "@/components/NewListingDialog";
+import { EditListingDialog } from "@/components/EditListingDialog";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [listings, setListings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,6 +34,43 @@ const Dashboard = () => {
       console.error("Error fetching listings:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (listingId: string) => {
+    if (!confirm("Are you sure you want to delete this listing?")) {
+      return;
+    }
+
+    try {
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/food-listings?id=${listingId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "Listing deleted successfully",
+        });
+        fetchListings();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to delete listing. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete listing. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -99,7 +139,7 @@ const Dashboard = () => {
             </div>
           ) : (
             listings.map((listing) => (
-            <Card key={listing.id} className="hover:shadow-elegant transition-shadow">
+            <Card key={listing._id} className="hover:shadow-elegant transition-shadow">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div>
@@ -124,9 +164,19 @@ const Dashboard = () => {
                     <span>{listing.location}</span>
                   </div>
                 </div>
-                <Button className="w-full mt-4" variant="outline">
-                  View Details
-                </Button>
+                <div className="flex gap-2 mt-4">
+                  <Button className="flex-1" variant="outline">
+                    View Details
+                  </Button>
+                  <EditListingDialog listing={listing} onSuccess={fetchListings} />
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleDelete(listing._id)}
+                  >
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
               </CardContent>
             </Card>
             ))
