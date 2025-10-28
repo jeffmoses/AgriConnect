@@ -15,6 +15,18 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [listings, setListings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user_data');
+    if (!userData) {
+      navigate("/auth");
+      return;
+    }
+    
+    const user = JSON.parse(userData);
+    setUserRole(user.role);
+  }, [navigate]);
 
   useEffect(() => {
     fetchListings();
@@ -85,7 +97,15 @@ const Dashboard = () => {
               <h1 className="text-xl font-bold">AgriConnect</h1>
             </div>
             <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm" onClick={() => navigate("/")}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  localStorage.removeItem('auth_token');
+                  localStorage.removeItem('user_data');
+                  navigate("/auth");
+                }}
+              >
                 Logout
               </Button>
             </div>
@@ -105,7 +125,7 @@ const Dashboard = () => {
               className="pl-10"
             />
           </div>
-          <NewListingDialog />
+          {userRole === 'donor' && <NewListingDialog />}
         </div>
 
         {/* Stats */}
@@ -168,14 +188,18 @@ const Dashboard = () => {
                   <Button className="flex-1" variant="outline">
                     View Details
                   </Button>
-                  <EditListingDialog listing={listing} onSuccess={fetchListings} />
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleDelete(listing._id)}
-                  >
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
+                  {userRole === 'donor' && (
+                    <>
+                      <EditListingDialog listing={listing} onSuccess={fetchListings} />
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleDelete(listing._id)}
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
