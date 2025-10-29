@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "npm:mongodb@6.3.0": "https://esm.sh/mongodb@6.3.0"
+  },
+  "nodeModulesDir": "auto"
+}

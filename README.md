@@ -1,143 +1,200 @@
-🥕 AgriConnect: Community Food Resource & Waste Reduction Platform
+# 🥕 AgriConnect: Community Food Resource & Waste Reduction Platform
 
-🎯 Project Overview & Mission
+## 🎯 Project Overview & Mission
 
 AgriConnect is a full-stack web application designed to tackle food insecurity and reduce food waste by creating a direct, efficient link between local food surplus producers (Donors) and charitable food distribution organizations (Recipients).
 
-We streamline the donation process, ensuring safe, nutritious food  reaches vulnerable communities and doesn't end up in landfills, directly contributing to Sustainable Development Goal (SDG) 2: Zero Hunger.
+We streamline the donation process, ensuring safe, nutritious food reaches vulnerable communities and doesn't end up in landfills, directly contributing to Sustainable Development Goal (SDG) 2: Zero Hunger.
 
-✨ Key Features
+## ✨ Key Features
 
-Real-Time Listing: Donors (farms, bakeries, restaurants) can quickly post available food items, specifying type, quantity, and expiry dates.
+- **Role-Based Authentication**: Secure signup and login system with three user roles (Donor, Recipient, Volunteer)
+- **Donor Dashboard**: Donors can post, edit, and delete food listings
+- **Recipient Dashboard**: Recipients can view available food listings
+- **Real-Time Listing Management**: Post available food items with details like type, quantity, and expiry dates
+- **Modern UI**: Built with React, Tailwind CSS, and shadcn/ui components for a clean, responsive experience
+- **Cloud Functions**: Serverless backend powered by Lovable Cloud with MongoDB Atlas integration
 
-Role-Based Views: Dedicated dashboards for Donors (posting) and Recipients (claiming).
+## 🛠️ Technology Stack
 
-Seamless API: A robust Express.js API layer handles CRUD operations for listings and user data.
-
-Modern Frontend: Built with React and styled using the high-performance Tailwind CSS v4 framework for a responsive, clean user experience.
-
-MongoDB Integration: Flexible Mongoose schemas for structured data storage.
-
-🛠️ Technology Stack
-
-AgriConnect is built on the MERN stack, utilizing modern tools for development:
-
-Backend (server)
-
-|
-
+### Frontend
 | Technology | Role |
-| Node.js / Express.js | Server runtime and RESTful API framework |
-| MongoDB / Mongoose | Database and Object Data Modeling (ODM) |
-| dotenv | Environment variable management |
+|------------|------|
+| React 18 | Component-based UI library |
+| TypeScript | Type-safe development |
+| Vite | Next-generation frontend tooling |
+| Tailwind CSS | Utility-first styling framework |
+| shadcn/ui | Reusable component library |
+| React Router | Client-side routing |
+| React Query | Data fetching and caching |
 
-Frontend (client)
-
+### Backend
 | Technology | Role |
-| React | Component-based UI library |
-| Vite | Next-generation frontend tooling (fast bundling and development) |
-| Axios | HTTP client for API requests |
-| Tailwind CSS v4 | Utility-first styling framework |
+|------------|------|
+| Lovable Cloud | Serverless backend platform |
+| Edge Functions | Serverless API endpoints (Deno runtime) |
+| MongoDB Atlas | Cloud-hosted NoSQL database |
 
-🚀 Getting Started
+## 🚀 Getting Started
 
-Follow these steps to set up the project locally.
+### Prerequisites
 
-1. Prerequisites
+- Node.js (LTS version)
+- npm or yarn
+- MongoDB Atlas account (connection string required)
 
-Ensure you have the following installed:
+### Installation & Setup
 
-Node.js (LTS version)
+1. **Clone the repository**:
+   ```bash
+   git clone [repository-url]
+   cd AgriConnect
+   ```
 
-npm or yarn
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-MongoDB (running locally or a cloud instance like MongoDB Atlas)
+3. **Environment Configuration**:
+   The project uses Lovable Cloud with pre-configured environment variables. The MongoDB connection string is stored as a secret in the cloud environment.
 
-2. Installation & Setup
+4. **Run the application**:
+   ```bash
+   npm run dev
+   ```
+   
+   The application will be available at `http://localhost:8080`
 
-Clone the repository:
+## 📁 Project Structure
 
-# Replace with your actual repo URL if hosted
-git clone [repository-url]
-cd AgriConnect 
-
-
-
-Install dependencies: The root package.json contains a convenient script to install dependencies for both the client and server:
-
-npm run install-all 
-
-
-
-Configure Environment Variables (.env) The server requires a .env file in the server/ directory. It is already populated with the specified MongoDB URI:
-
-# Content of server/.env
-PORT=5000
-MONGO_URI=mongodb+srv://mern-stack:J.otiendedb97@cluster0.fycb2yi.mongodb.net/mernstack_express?retryWrites=true&w=majority&appName=Cluster0
-JWT_SECRET=super-secure-random-key-for-agriconnect-jwt
-MAP_API_KEY=YOUR_MAP_API_KEY
-
-
-
-3. Running the Application
-
-Use the concurrent script from the root directory to start both the backend and frontend simultaneously:
-
-npm run dev
-
-
-
-| Component | Port | Description |
-| Server (API) | http://localhost:5000 | Node/Express API, handles MongoDB connection. |
-| Client (App) | http://localhost:5173 | React frontend application. |
-
-The frontend will automatically proxy API requests to the backend (via vite.config.js).
-
-📁 Project Structure
-
+```
 AgriConnect/
-├── client/                     # React Frontend
-│   ├── src/
-│   │   ├── App.jsx             # Main application component
-│   │   └── index.css           # Tailwind v4 import
-│   └── vite.config.js          # Proxy setup for API
-│
-├── server/                     # Node/Express Backend
-│   ├── config/                 
-│   │   └── db.js               # Database connection
-│   ├── models/                 
-│   │   └── FoodListing.js      # Mongoose Schema
-│   ├── routes/                 
-│   │   └── listingRoutes.js    # API Endpoints (/api/listings)
-│   ├── controllers/            
-│   │   └── listingController.js# Business Logic
-│   └── server.js               # Main entry point
-│
-├── .env                        # Global environment variables
-└── package.json                # Root utility scripts (e.g., npm run dev)
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── ui/             # shadcn/ui components
+│   │   ├── NewListingDialog.tsx
+│   │   └── EditListingDialog.tsx
+│   ├── pages/              # Page components
+│   │   ├── Landing.tsx     # Landing page
+│   │   ├── Auth.tsx        # Login/Signup page
+│   │   ├── Dashboard.tsx   # Main dashboard
+│   │   └── Index.tsx       # Route handler
+│   ├── integrations/
+│   │   └── supabase/       # Lovable Cloud client
+│   └── lib/                # Utility functions
+├── supabase/
+│   └── functions/          # Edge Functions (serverless APIs)
+│       ├── auth/           # Authentication endpoint
+│       ├── food-listings/  # CRUD operations for listings
+│       └── user-profiles/  # User profile management
+└── public/                 # Static assets
+```
 
+## 🔌 API Endpoints
 
+### Authentication (`/auth`)
+- **POST** `?action=signup` - Create new user account
+- **POST** `?action=login` - Login to existing account
 
-🛣️ Roadmap
+### Food Listings (`/food-listings`)
+- **GET** - Fetch all listings or by ID
+- **POST** - Create new listing (Donor only)
+- **PUT** `?id={id}` - Update listing (Donor only)
+- **DELETE** `?id={id}` - Delete listing (Donor only)
 
-Future development goals include:
+### User Profiles (`/user-profiles`)
+- **GET** - Fetch profiles by email or ID
+- **POST** - Create new profile
+- **PUT** `?id={id}` - Update profile
+- **DELETE** `?id={id}` - Delete profile
 
-$$$$
+For detailed API documentation, see [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 
- Implement JWT Authentication for Donor and Recipient roles.
+## 🗄️ Database Schema
 
-$$$$
+### MongoDB Collections
 
- Integrate React Router for multi-page navigation.
+#### `users`
+- email (string, unique)
+- password (string) ⚠️ *Plain text in current implementation*
+- createdAt (Date)
 
-$$$$
+#### `user_profiles`
+- email (string, unique)
+- name (string)
+- role (string: 'donor' | 'recipient' | 'volunteer')
+- createdAt (Date)
+- updatedAt (Date)
 
- Add a Geospatial Map View to visualize listings based on location.
+#### `food_listings`
+- title (string)
+- donor (string)
+- quantity (string)
+- expiry (string)
+- location (string)
+- status (string)
+- userId (string)
+- createdAt (Date)
+- updatedAt (Date)
 
-$$$$
+## 🔐 Authentication Flow
 
- Develop robust error handling and logging across the stack.
+1. User signs up with email, password, name, and role
+2. System creates entries in both `users` and `user_profiles` collections
+3. Server generates a simple token (base64 encoded)
+4. Token and user data stored in localStorage
+5. Role-based UI rendering (donors see post/edit/delete options)
 
-📜 License
+## 🎨 Design System
 
-Distributed under the MIT License. See the repository for more information.
+The application uses a semantic design system with:
+- Custom color tokens defined in `src/index.css`
+- Tailwind configuration in `tailwind.config.ts`
+- shadcn/ui components for consistent UI elements
+- Responsive design for mobile and desktop
+
+## 🛣️ Roadmap
+
+### Completed ✅
+- JWT-based authentication with role support
+- Role-based access control (Donor vs Recipient views)
+- Full CRUD operations for food listings
+- Responsive UI with modern design
+
+### Future Development 🚀
+- **Security Enhancements**: Implement bcrypt password hashing
+- **Enhanced JWT**: Proper JWT signing and validation
+- **Geospatial Features**: Map view to visualize food listings by location
+- **Notifications**: Email/SMS alerts for new listings
+- **Analytics Dashboard**: Track donation impact and statistics
+- **Mobile App**: React Native version for iOS and Android
+- **Admin Panel**: Manage users and monitor platform activity
+
+## ⚠️ Security Notes
+
+**IMPORTANT**: The current authentication implementation has the following limitations:
+
+1. **Passwords are stored in plain text** - Must implement bcrypt hashing before production
+2. **Simple token generation** - Should use proper JWT with signing
+3. **No input validation** - Add comprehensive validation on all inputs
+4. **No rate limiting** - Implement to prevent abuse
+5. **Basic error handling** - Needs enhancement for production use
+
+**Do not deploy this application to production without addressing these security concerns!**
+
+## 📝 License
+
+Distributed under the MIT License.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📞 Support
+
+For issues and questions, please open an issue on the repository.
+
+---
+
+**Built with ❤️ to fight food waste and hunger**
