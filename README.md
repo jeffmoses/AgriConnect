@@ -6,6 +6,8 @@ AgriConnect is a full-stack web application designed to tackle food insecurity a
 
 We streamline the donation process, ensuring safe, nutritious food reaches vulnerable communities and doesn't end up in landfills, directly contributing to Sustainable Development Goal (SDG) 2: Zero Hunger.
 
+Here is a webapp <a href="https://agrikonnect.lovable.app/">link</a>
+
 ## ✨ Key Features
 
 - **Role-Based Authentication**: Secure signup and login system with three user roles (Donor, Recipient, Volunteer)
